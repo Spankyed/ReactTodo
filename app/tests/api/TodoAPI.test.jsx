@@ -3,13 +3,14 @@ var expect= require('expect');
 var TodoAPI = require('TodoAPI');
 
 describe('TodoAPI', () => {
+  beforeEach(()=>{
+    localStorage.removeItem('todos');
+  });
+  
   it('should exist', () => {
     expect(TodoAPI).toExist();
   });
   describe('setTodos', () =>{
-    beforeEach(()=>{
-      localStorage.removeItem('todos');
-    });
     it('should set Todos', () =>{
       var todos = [{
         id: 23,
@@ -58,7 +59,7 @@ describe('TodoAPI', () => {
       completed: false
     },{
       id: 3,
-      text: 'test3',
+      text: '3',
       completed: true
     }];
 
@@ -69,6 +70,18 @@ describe('TodoAPI', () => {
     it('should return non-completed todos if showCompleted is false',() =>{
       var filteredTodos = TodoAPI.filterTodos(todos, false, '');
       expect(filteredTodos.length).toBe(1);
+    });
+    it('should return sorted array with non-completed id 2 first',() =>{
+      var filteredTodos = TodoAPI.filterTodos(todos, true, '');
+      expect(filteredTodos[0].completed).toBe(false);
+    });
+    it('should filter todos by searchText',() =>{
+      var filteredTodos = TodoAPI.filterTodos(todos, true, 'test');
+      expect(filteredTodos.length).toBe(2);
+    });
+    it('should return all todos if searchText is empty ',() =>{
+      var filteredTodos = TodoAPI.filterTodos(todos, true, '');
+      expect(filteredTodos.length).toBe(3);
     });
   });
 
